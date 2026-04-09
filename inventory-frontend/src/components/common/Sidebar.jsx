@@ -23,7 +23,7 @@ const ownerNav = [
   { label: 'Products', path: '/products', icon: Package },
   { label: 'Record Sale', path: '/record-sale', icon: ShoppingCart },
   { label: 'Sales', path: '/sales', icon: TrendingUp },
-  { label: 'Reports', path: '/reports', icon: FileText, soon: true },
+  { label: 'Reports', path: '/reports', icon: FileText },
   { label: 'Staff', path: '/staff', icon: Users, soon: true },
   { label: 'Alerts', path: '/alerts', icon: Bell },
   { label: 'Forecast', path: '/forecast', icon: BarChart2, soon: true },

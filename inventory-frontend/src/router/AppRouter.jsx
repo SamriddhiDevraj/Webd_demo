@@ -6,9 +6,11 @@ import LoginPage from '../pages/auth/LoginPage.jsx';
 import RegisterPage from '../pages/auth/RegisterPage.jsx';
 import ShopSelectorPage from '../pages/ShopSelectorPage.jsx';
 import DashboardPage from '../pages/owner/DashboardPage.jsx';
+import StaffDashboardPage from '../pages/staff/StaffDashboardPage.jsx';
 import ProductsPage from '../pages/owner/ProductsPage.jsx';
 import SalesPage from '../pages/owner/SalesPage.jsx';
 import AlertsPage from '../pages/owner/AlertsPage.jsx';
+import ReportsPage from '../pages/owner/ReportsPage.jsx';
 import RecordSalePage from '../pages/RecordSalePage.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
@@ -37,6 +39,17 @@ function ShopSelectorRoute() {
   return <ShopSelectorPage />;
 }
 
+function DashboardRoute() {
+  const { isOwner } = useShop();
+  return (
+    <AuthGuard>
+      <AppLayout>
+        {isOwner ? <DashboardPage /> : <StaffDashboardPage />}
+      </AppLayout>
+    </AuthGuard>
+  );
+}
+
 export default function AppRouter() {
   return (
     <BrowserRouter>
@@ -45,14 +58,7 @@ export default function AppRouter() {
         <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
         <Route path="/select-shop" element={<ShopSelectorRoute />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <AuthGuard>
-              <AppLayout><DashboardPage /></AppLayout>
-            </AuthGuard>
-          }
-        />
+        <Route path="/dashboard" element={<DashboardRoute />} />
         <Route
           path="/products"
           element={
@@ -74,6 +80,14 @@ export default function AppRouter() {
           element={
             <AuthGuard ownerOnly>
               <AppLayout><SalesPage /></AppLayout>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <AuthGuard ownerOnly>
+              <AppLayout><ReportsPage /></AppLayout>
             </AuthGuard>
           }
         />
