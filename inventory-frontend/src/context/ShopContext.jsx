@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
 const ShopContext = createContext({
   activeShop: null,
@@ -21,15 +21,15 @@ export function ShopProvider({ children }) {
     }
   }, []);
 
-  function setActiveShop(shop) {
+  const setActiveShop = useCallback((shop) => {
     sessionStorage.setItem('activeShop', JSON.stringify(shop));
     setActiveShopState(shop);
-  }
+  }, []);
 
-  function clearActiveShop() {
+  const clearActiveShop = useCallback(() => {
     sessionStorage.removeItem('activeShop');
     setActiveShopState(null);
-  }
+  }, []);
 
   return (
     <ShopContext.Provider
