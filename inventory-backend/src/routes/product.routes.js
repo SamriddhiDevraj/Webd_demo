@@ -12,12 +12,12 @@ const router = Router({ mergeParams: true });
 router.use(authenticate, requireMembership);
 
 // IMPORTANT: import route must come before /:id to avoid conflict
-router.post('/:shopId/products/import', requireOwner, csvUpload.single('csv'), importCSV);
+router.post('/products/import', requireOwner, csvUpload.single('csv'), importCSV);
 
-router.get('/:shopId/products', getAll);
-router.get('/:shopId/products/:id', getOne);
-router.post('/:shopId/products', requireOwner, upload.single('image'), create);
-router.put('/:shopId/products/:id', requireOwner, upload.single('image'), update);
-router.delete('/:shopId/products/:id', requireOwner, remove);
+router.get('/products', getAll);
+router.get('/products/:id', getOne);
+router.post('/products', requireOwner, upload.single('image'), create);
+router.put('/products/:id', requireOwner, upload.single('image'), update);
+router.delete('/products/:id', requireOwner, remove);
 
 export default router;

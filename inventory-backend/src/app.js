@@ -23,9 +23,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/shop', categoryRoutes);
-app.use('/api/shop', productRoutes);
-app.use('/api/shop', saleRoutes);
+app.use('/api/shop/:shopId', categoryRoutes);
+app.use('/api/shop/:shopId', productRoutes);
+app.use('/api/shop/:shopId', saleRoutes);
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use(errorHandler);
 

@@ -8,9 +8,9 @@ const router = Router({ mergeParams: true });
 
 router.use(authenticate, requireMembership);
 
-router.get('/:shopId/categories', getAll);
-router.post('/:shopId/categories', requireOwner, create);
-router.put('/:shopId/categories/:id', requireOwner, update);
-router.delete('/:shopId/categories/:id', requireOwner, remove);
+router.get('/categories', getAll);
+router.post('/categories', requireOwner, create);
+router.put('/categories/:id', requireOwner, update);
+router.delete('/categories/:id', requireOwner, remove);
 
 export default router;

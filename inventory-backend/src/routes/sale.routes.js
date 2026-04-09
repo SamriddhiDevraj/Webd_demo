@@ -8,8 +8,8 @@ const router = Router({ mergeParams: true });
 router.use(authenticate, requireMembership);
 
 // summary must come before any potential :id route
-router.get('/:shopId/sales/summary', getSummary);
-router.get('/:shopId/sales', getSales);
-router.post('/:shopId/sales', recordSale);
+router.get('/sales/summary', getSummary);
+router.get('/sales', getSales);
+router.post('/sales', recordSale);
 
 export default router;
