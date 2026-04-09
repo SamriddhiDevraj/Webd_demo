@@ -12,6 +12,8 @@ import SalesPage from '../pages/owner/SalesPage.jsx';
 import AlertsPage from '../pages/owner/AlertsPage.jsx';
 import ReportsPage from '../pages/owner/ReportsPage.jsx';
 import RecordSalePage from '../pages/RecordSalePage.jsx';
+import StaffPage from '../pages/owner/StaffPage.jsx';
+import AcceptInvitePage from '../pages/auth/AcceptInvitePage.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
 function AuthGuard({ children, ownerOnly = false }) {
@@ -99,6 +101,17 @@ export default function AppRouter() {
             </AuthGuard>
           }
         />
+        <Route
+          path="/staff"
+          element={
+            <AuthGuard ownerOnly>
+              <AppLayout><StaffPage /></AppLayout>
+            </AuthGuard>
+          }
+        />
+
+        {/* Fully public — no auth guard, no AppLayout */}
+        <Route path="/invite/:token" element={<AcceptInvitePage />} />
 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
