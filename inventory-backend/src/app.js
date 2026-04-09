@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import authRoutes from './routes/auth.routes.js';
+import categoryRoutes from './routes/category.routes.js';
+import productRoutes from './routes/product.routes.js';
+import saleRoutes from './routes/sale.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -20,6 +23,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/shop', categoryRoutes);
+app.use('/api/shop', productRoutes);
+app.use('/api/shop', saleRoutes);
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use(errorHandler);
 
