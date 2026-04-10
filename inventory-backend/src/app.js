@@ -9,6 +9,8 @@ import dashboardRoutes from './routes/dashboard.routes.js';
 import reportRoutes from './routes/report.routes.js';
 import staffRoutes from './routes/staff.routes.js';
 import inviteRoutes from './routes/invite.routes.js';
+import aiRoutes from './routes/ai.routes.js';
+import { startWeeklyAlertJob } from './jobs/weeklyAlert.job.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -34,7 +36,10 @@ app.use('/api/shop/:shopId', dashboardRoutes);
 app.use('/api/shop/:shopId', reportRoutes);
 app.use('/api/shop/:shopId', staffRoutes);
 app.use('/api/invite', inviteRoutes);
+app.use('/api/shop', aiRoutes);
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+
+startWeeklyAlertJob();
 app.use(errorHandler);
 
 export default app;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useShop } from '../../context/ShopContext.jsx';
 import { logout as logoutApi } from '../../api/auth.api.js';
+import { getAlerts } from '../../api/ai.api.js';
 
 const ownerNav = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -26,8 +27,8 @@ const ownerNav = [
   { label: 'Reports', path: '/reports', icon: FileText },
   { label: 'Staff', path: '/staff', icon: Users },
   { label: 'Alerts', path: '/alerts', icon: Bell },
-  { label: 'Forecast', path: '/forecast', icon: BarChart2, soon: true },
-  { label: 'Chat', path: '/chat', icon: MessageSquare, soon: true },
+  { label: 'Forecast', path: '/forecast', icon: BarChart2 },
+  { label: 'Chat', path: '/chat', icon: MessageSquare },
 ];
 
 const staffNav = [
@@ -36,7 +37,7 @@ const staffNav = [
   { label: 'Alerts', path: '/alerts', icon: Bell },
 ];
 
-function NavItem({ item, onClick }) {
+function NavItem({ item, onClick, badge }) {
   const Icon = item.icon;
 
   if (item.soon) {
@@ -64,18 +65,31 @@ function NavItem({ item, onClick }) {
       }
     >
       <Icon size={18} className="flex-shrink-0" />
-      <span className="text-sm">{item.label}</span>
+      <span className="text-sm flex-1">{item.label}</span>
+      {badge > 0 && (
+        <span className="bg-gradient-to-r from-[#0052FF] to-[#4D7CFF] text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
+          {badge > 99 ? '99+' : badge}
+        </span>
+      )}
     </NavLink>
   );
 }
 
 export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [unreadAlertCount, setUnreadAlertCount] = useState(0);
   const { user, logout, isOwner: authIsOwner } = useAuth();
   const { activeShop, isOwner, clearActiveShop } = useShop();
   const navigate = useNavigate();
 
   const navItems = isOwner ? ownerNav : staffNav;
+
+  useEffect(() => {
+    if (!activeShop?.shopId) return;
+    getAlerts(activeShop.shopId, { unreadOnly: 'true' })
+      .then((res) => setUnreadAlertCount(res.data.unreadCount || 0))
+      .catch(() => {});
+  }, [activeShop?.shopId]);
 
   async function handleLogout() {
     try { await logoutApi(); } catch { /* stateless */ }
@@ -99,7 +113,7 @@ export default function Sidebar() {
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => (
-          <NavItem key={item.path} item={item} onClick={() => setMobileOpen(false)} />
+          <NavItem key={item.path} item={item} onClick={() => setMobileOpen(false)} badge={item.path === '/alerts' ? unreadAlertCount : 0} />
         ))}
       </nav>
 
@@ -161,7 +175,7 @@ export default function Sidebar() {
             <div className="flex-1 overflow-y-auto">
               <nav className="px-3 py-4 space-y-0.5">
                 {navItems.map((item) => (
-                  <NavItem key={item.path} item={item} onClick={() => setMobileOpen(false)} />
+                  <NavItem key={item.path} item={item} onClick={() => setMobileOpen(false)} badge={item.path === '/alerts' ? unreadAlertCount : 0} />
                 ))}
               </nav>
             </div>

@@ -13,6 +13,8 @@ import AlertsPage from '../pages/owner/AlertsPage.jsx';
 import ReportsPage from '../pages/owner/ReportsPage.jsx';
 import RecordSalePage from '../pages/RecordSalePage.jsx';
 import StaffPage from '../pages/owner/StaffPage.jsx';
+import ForecastPage from '../pages/owner/ForecastPage.jsx';
+import ChatPage from '../pages/owner/ChatPage.jsx';
 import AcceptInvitePage from '../pages/auth/AcceptInvitePage.jsx';
 import LoadingSpinner from '../components/common/LoadingSpinner.jsx';
 
@@ -106,6 +108,22 @@ export default function AppRouter() {
           element={
             <AuthGuard ownerOnly>
               <AppLayout><StaffPage /></AppLayout>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/forecast"
+          element={
+            <AuthGuard ownerOnly>
+              <AppLayout><ForecastPage /></AppLayout>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/chat"
+          element={
+            <AuthGuard ownerOnly>
+              <AppLayout><ChatPage /></AppLayout>
             </AuthGuard>
           }
         />
