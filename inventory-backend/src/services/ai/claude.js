@@ -1,41 +1,56 @@
+// src/services/ai/claude.js
+// Kept as claude.js to avoid changing all imports
+// Now uses Groq API with llama-3.3-70b-versatile model
+
+import Groq from 'groq-sdk';
+
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+const MODEL = 'llama-3.3-70b-versatile';
+
+// Base text call — returns plain string response
 const callClaude = async (systemPrompt, userMessage, maxTokens = 1024) => {
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': process.env.CLAUDE_API_KEY,
-      'anthropic-version': '2023-06-01',
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
-    }),
+  const completion = await groq.chat.completions.create({
+    model: MODEL,
+    max_tokens: maxTokens,
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user',   content: userMessage  },
+    ],
+    temperature: 0.3,
   });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`Claude API error: ${error.error?.message || response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.content[0].text;
+  const text = completion.choices[0]?.message?.content;
+  if (!text) throw new Error('Groq returned empty response');
+  return text;
 };
 
-// Helper: parse JSON from Claude response safely
-// Claude sometimes wraps JSON in markdown code blocks — strip them
+// JSON call — strips markdown code fences and parses JSON
 export const callClaudeJSON = async (systemPrompt, userMessage, maxTokens = 1024) => {
-  const raw = await callClaude(systemPrompt, userMessage, maxTokens);
+  const enhancedSystem = `${systemPrompt}
+
+IMPORTANT: Your response must be valid JSON only. Do not include any explanation, markdown formatting, or code blocks. Do not wrap in \`\`\`json or \`\`\`. Output raw JSON only.`;
+
+  const raw = await callClaude(enhancedSystem, userMessage, maxTokens);
+
   const cleaned = raw
-    .replace(/^```json\s*/i, '')
-    .replace(/^```\s*/i, '')
-    .replace(/\s*```$/i, '')
+    .replace(/^```json\s*/im, '')
+    .replace(/^```\s*/im, '')
+    .replace(/\s*```$/im, '')
     .trim();
+
+  const jsonStart = cleaned.search(/[[{]/);
+  if (jsonStart === -1) {
+    throw new Error(`Groq did not return JSON. Got: ${cleaned.slice(0, 200)}`);
+  }
+  const jsonStr = cleaned.slice(jsonStart);
+
   try {
-    return JSON.parse(cleaned);
+    return JSON.parse(jsonStr);
   } catch (e) {
-    throw new Error(`Claude returned invalid JSON: ${cleaned.slice(0, 200)}`);
+    throw new Error(`Failed to parse Groq JSON response: ${jsonStr.slice(0, 300)}`);
   }
 };
 

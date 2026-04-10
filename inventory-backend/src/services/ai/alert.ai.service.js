@@ -80,7 +80,9 @@ Alert rules:
 - slow_mover low: daysWithoutSale >= 30 AND currentStock > 0
 - trending low: last30DaysSales is significantly above average for this product type
 
-Return empty array [] if no alerts are needed. Return ONLY the JSON array.`;
+Return empty array [] if no alerts are needed.
+YOU MUST respond with ONLY a raw JSON array. No explanation, no markdown, no code blocks.
+Start your response with [ and end with ]. Nothing else.`;
 
   const alerts = await callClaudeJSON(systemPrompt, userMessage, 2048);
 

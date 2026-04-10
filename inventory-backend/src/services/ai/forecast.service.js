@@ -56,19 +56,20 @@ Reorder threshold: ${product.reorderThreshold}
 Sales history (last 90 days):
 ${JSON.stringify(salesHistory)}
 
-Return this exact JSON structure with no extra text:
+You MUST respond with ONLY a raw JSON object. No explanation. No markdown. No code blocks.
+Respond with exactly this structure:
 {
-  "next7Days": <number — predicted units to sell in next 7 days>,
-  "next30Days": <number — predicted units to sell in next 30 days>,
-  "confidence": <"high" | "medium" | "low">,
-  "seasonalPattern": <string describing any pattern, or null>,
-  "trend": <"increasing" | "decreasing" | "stable">,
-  "reasoning": <1-2 sentence explanation>
+  "next7Days": <integer>,
+  "next30Days": <integer>,
+  "confidence": "<high|medium|low>",
+  "seasonalPattern": "<string or null>",
+  "trend": "<increasing|decreasing|stable>",
+  "reasoning": "<one sentence>"
 }
 
 Confidence rules:
-- high: 60+ days of data with consistent patterns
-- medium: 30-59 days or irregular patterns
+- high: 60+ days of sales data
+- medium: 30-59 days of data
 - low: less than 30 days of data`;
 
   const forecast = await callClaudeJSON(systemPrompt, userMessage);

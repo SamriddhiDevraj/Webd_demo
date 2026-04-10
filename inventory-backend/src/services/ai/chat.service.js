@@ -44,9 +44,12 @@ CRITICAL RULES:
 2. Only use read operations — absolutely NO $out, $merge, $set, $unset, $push, $pull at top level
 3. Do NOT use $where, $function, or $accumulator (JavaScript execution is forbidden)
 4. Return ONLY valid JSON: { "collection": "sales" | "products" | "categories", "pipeline": [...] }
-5. No explanation, no markdown, no code blocks — only JSON`;
+5. No explanation, no markdown, no code blocks — raw JSON only
+6. Start your response with { and end with }. Nothing before or after.`;
 
-  const step1User = `${historyContext ? `Recent conversation:\n${historyContext}\n\n` : ''}User question: ${userMessage}`;
+  const step1User = `${historyContext ? `Recent conversation:\n${historyContext}\n\n` : ''}User question: ${userMessage}
+
+Respond with ONLY the JSON object. No explanation. No markdown.`;
 
   let queryData = [];
 
