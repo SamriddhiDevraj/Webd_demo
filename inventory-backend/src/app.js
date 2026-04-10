@@ -16,7 +16,27 @@ import { errorHandler } from './middleware/errorHandler.js';
 const app = express();
 
 const corsOptions = {
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      process.env.CLIENT_URL,
+      'http://localhost:5173',
+    ];
+    
+    // Allow requests with no origin (Postman, mobile apps)
+    if (!origin) return callback(null, true);
+    
+    // Allow any Vercel preview URL for this project
+    if (origin.includes('webddemo') && origin.includes('vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Allow exact matches
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
